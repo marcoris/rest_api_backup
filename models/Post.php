@@ -12,6 +12,7 @@ class Post {
     public $category_id;
     public $category_name;
     public $created_at;
+    public $num;
 
     // Constructor with DB
     public function __construct($database)
@@ -71,6 +72,7 @@ class Post {
         ));
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $num = $stmt->rowCount();
 
         // Set properties
         $this->title = $row['title'];
@@ -79,6 +81,7 @@ class Post {
         $this->category_id = $row['category_id'];
         $this->category_name = $row['category_name'];
         $this->created_at = $row['created_at'];
+        $this->num = $num;
     }
 
     // Create post

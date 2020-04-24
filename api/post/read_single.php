@@ -19,16 +19,24 @@ $post->post_id = isset($_GET['id']) ? $_GET['id'] : die();
 // Get single post
 $post->readSingle();
 
-// Create array
-$postArr = array(
-    'id' => $post->post_id,
-    'title' => $post->title,
-    'body' => $post->body,
-    'author' => $post->author,
-    'category_id' => $post->category_id,
-    'category_name' => $post->category_name,
-    'created_at' => $post->created_at,
-);
+if ($post->num > 0) {
+    // Create array
+    $postArr = array(
+        'id' => $post->post_id,
+        'title' => $post->title,
+        'body' => $post->body,
+        'author' => $post->author,
+        'category_id' => $post->category_id,
+        'category_name' => $post->category_name,
+        'created_at' => $post->created_at,
+    );
+    
+    // Make JSON
+    print_r(json_encode($postArr));
+} else {
+    // No posts
+    echo json_encode(
+        array('message' => 'No Post found')
+    );
+}
 
-// Make JSON
-print_r(json_encode($postArr));
