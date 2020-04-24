@@ -4,14 +4,11 @@ class Category {
     private $conn;
     private $table = 'categories';
 
-    // Post properties
-    public $post_id;
-    public $title;
-    public $body;
-    public $author;
-    public $category_id;
-    public $category_name;
+    // Category properties
+    public $id;
+    public $name;
     public $created_at;
+    public $num;
 
     // Constructor with DB
     public function __construct($database)
@@ -46,53 +43,38 @@ class Category {
         // Prepare statement
         $stmt = $this->conn->prepare(
             "SELECT
-                c.name as category_name,
-                p.id,
-                p.category_id,
-                p.title,
-                p.body,
-                p.author,
-                p.created_at
-            FROM " .
-                $this->table . " p
-                LEFT JOIN categories c ON p.category_id = c.id
+            id,
+            name,
+            created_at
+        FROM " .
+            $this->table . "
             WHERE
-                p.id = :id"
+                id = :id"
         );
 
         // Execute query
         $stmt->execute(array(
-            ':id' => $this->post_id
+            ':id' => $this->id
         ));
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $num = $stmt->rowCount();
 
         // Set properties
-        $this->title = $row['title'];
-        $this->body = $row['body'];
-        $this->author = $row['author'];
-        $this->category_id = $row['category_id'];
-        $this->category_name = $row['category_name'];
+        $this->id = $row['id'];
+        $this->name = $row['name'];
         $this->created_at = $row['created_at'];
+        $this->num = $num;
     }
 
     // Create post
     public function create()
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . $this->table . "
-            SET
-                title = :title,
-                body = :body,
-                author = :author,
-                category_id = :category_id"
-        );
+            "INSERT INTO " . $this->table . " SET name = :name");
 
         if ($stmt->execute(array(
-            ':title' => htmlspecialchars(strip_tags($this->title)),
-            ':body' => htmlspecialchars(strip_tags($this->body)),
-            ':author' => htmlspecialchars(strip_tags($this->author)),
-            ':category_id' => htmlspecialchars(strip_tags($this->category_id))
+            ':name' => htmlspecialchars(strip_tags($this->name)),
         ))) {
             return true;
         }
@@ -107,22 +89,11 @@ class Category {
     public function update()
     {
         $stmt = $this->conn->prepare(
-            "UPDATE " . $this->table . "
-            SET
-                title = :title,
-                body = :body,
-                author = :author,
-                category_id = :category_id
-            WHERE
-                id = :id"
-        );
+            "UPDATE " . $this->table . " SET name = :name WHERE id = :id");
 
         if ($stmt->execute(array(
-            ':title' => htmlspecialchars(strip_tags($this->title)),
-            ':body' => htmlspecialchars(strip_tags($this->body)),
-            ':author' => htmlspecialchars(strip_tags($this->author)),
-            ':category_id' => htmlspecialchars(strip_tags($this->category_id)),
-            ':id' => htmlspecialchars(strip_tags($this->post_id))
+            ':name' => htmlspecialchars(strip_tags($this->name)),
+            ':id' => htmlspecialchars(strip_tags($this->id))
         ))) {
             return true;
         }
@@ -139,7 +110,7 @@ class Category {
         $stmt = $this->conn->prepare("DELETE FROM " . $this->table . " WHERE id = :id");
         
         if ($stmt->execute(array(
-            ":id" => $this->post_id
+            ":id" => $this->id
         ))) {
             return true;
         }
