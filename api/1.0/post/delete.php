@@ -5,29 +5,29 @@ header('Content-type: application/json');
 header('Access-Control-Allow-Methods: DELETE');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-type, Access-Control-Allow-Methods, Authorization, X-Requested-Width');
 
-include_once '../../config/Database.php';
-include_once '../../models/Category.php';
+include_once '../config/Database.php';
+include_once '../models/Post.php';
 
 // Instantiate DB + connect
 $database = new Database();
 $db = $database->connect();
 
-// Instantiate Category object
-$category = new Category($db);
+// Instantiate Post object
+$post = new Post($db);
 
-// Get raw Categoryed data
+// Get raw posted data
 $data = json_decode(file_get_contents("php://input"));
 
 // Set id to update
-$category->id = $data->id;
+$post->post_id = $data->id;
 
-// Delete Category
-if ($category->delete()) {
+// Delete post
+if ($post->delete()) {
     echo json_encode(
-        array('message' => 'Category deleted')
+        array('message' => 'Post deleted')
     );
 } else {
         echo json_encode(
-            array('message' => 'Category not deleted')
+            array('message' => 'Post not deleted')
         );
 }

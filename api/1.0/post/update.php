@@ -5,30 +5,34 @@ header('Content-type: application/json');
 header('Access-Control-Allow-Methods: PUT');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-type, Access-Control-Allow-Methods, Authorization, X-Requested-Width');
 
-include_once '../../config/Database.php';
-include_once '../../models/Category.php';
+include_once '../config/Database.php';
+include_once '../models/Post.php';
 
 // Instantiate DB + connect
 $database = new Database();
 $db = $database->connect();
 
-// Instantiate Category object
-$category = new Category($db);
+// Instantiate Post object
+$post = new Post($db);
 
-// Get raw Categoryed data
+// Get raw posted data
 $data = json_decode(file_get_contents("php://input"));
 
 // Set id to update
-$category->id = $data->id;
-$category->name = $data->name;
+$post->post_id = $data->id;
 
-// Update Category
-if ($category->update()) {
+$post->title = $data->title;
+$post->body = $data->body;
+$post->author = $data->author;
+$post->category_id = $data->category_id;
+
+// Update post
+if ($post->update()) {
     echo json_encode(
-        array('message' => 'Category updated')
+        array('message' => 'Post updated')
     );
 } else {
         echo json_encode(
-            array('message' => 'Category not updated')
+            array('message' => 'Post not updated')
         );
 }

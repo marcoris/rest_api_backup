@@ -3,8 +3,8 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-type: application/json');
 
-include_once '../../config/Database.php';
-include_once '../../models/Category.php';
+include_once '../config/Database.php';
+include_once '../models/Category.php';
 
 // Instantiate DB + connect
 $database = new Database();
@@ -14,7 +14,7 @@ $db = $database->connect();
 $category = new Category($db);
 
 // Get ID from URL
-$category->category_id = isset($_GET['id']) ? $_GET['id'] : die();
+$category->id = isset($_GET['id']) ? $_GET['id'] : die();
 
 // Get single category
 $category->readSingle();

@@ -3,8 +3,8 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-type: application/json');
 
-include_once '../../config/Database.php';
-include_once '../../models/Post.php';
+include_once '../config/Database.php';
+include_once '../models/Post.php';
 
 // Instantiate DB + connect
 $database = new Database();
@@ -16,11 +16,8 @@ $post = new Post($db);
 // Post query
 $result = $post->read();
 
-// Get row count
-$num = $result->rowCount();
-
 // Check if any post
-if ($num > 0) {
+if ($result->rowCount() > 0) {
     // Post array
     $postArr = array();
     $postArr['data'] = array();

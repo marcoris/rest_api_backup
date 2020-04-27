@@ -2,11 +2,11 @@
 // Headers
 header('Access-Control-Allow-Origin: *');
 header('Content-type: application/json');
-header('Access-Control-Allow-Methods: DELETE');
+header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-type, Access-Control-Allow-Methods, Authorization, X-Requested-Width');
 
-include_once '../../config/Database.php';
-include_once '../../models/Post.php';
+include_once '../config/Database.php';
+include_once '../models/Post.php';
 
 // Instantiate DB + connect
 $database = new Database();
@@ -18,16 +18,18 @@ $post = new Post($db);
 // Get raw posted data
 $data = json_decode(file_get_contents("php://input"));
 
-// Set id to update
-$post->post_id = $data->id;
+$post->title = $data->title;
+$post->body = $data->body;
+$post->author = $data->author;
+$post->category_id = $data->category_id;
 
-// Delete post
-if ($post->delete()) {
+// Create post
+if ($post->create()) {
     echo json_encode(
-        array('message' => 'Post deleted')
+        array('message' => 'Post created')
     );
 } else {
         echo json_encode(
-            array('message' => 'Post not deleted')
+            array('message' => 'Post not created')
         );
 }
