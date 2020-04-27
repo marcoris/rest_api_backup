@@ -13,14 +13,17 @@ $db = $database->connect();
 // Instantiate Category object
 $category = new Category($db);
 
-// Category query
-$result = $category->read();
+$category->category_id = isset($_GET['id']) ? $_GET['id'] : null;
 
-// Get row count
-$num = $result->rowCount();
+// Post query
+if ($category->category_id != null) {
+    $result = $category->readSingle();
+} else {
+    $result = $category->read();
+}
 
 // Check if any Category
-if ($num > 0) {
+if ($result->rowCount() > 0) {
     // Category array
     $categoryArr = array();
     $categoryArr['data'] = array();
