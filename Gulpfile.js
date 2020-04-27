@@ -23,6 +23,8 @@ function deploy() {
         .pipe(replace('@@dbhost', process.env.DB_HOST))
         .pipe(replace('@@dbname', process.env.DB_NAME))
         .pipe(replace('@@dbpass', process.env.DB_PASS))
+        .pipe(replace('@@admintoken', process.env.ADMIN_TOKEN))
+        .pipe(replace('@@usertoken', process.env.USER_TOKEN))
         .pipe(conn.newer('.'))
         .pipe(conn.dest('.'));
 }
