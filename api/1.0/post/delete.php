@@ -8,26 +8,33 @@ header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-type
 include_once '../config/Database.php';
 include_once '../models/Post.php';
 
-// Instantiate DB + connect
-$database = new Database();
-$db = $database->connect();
+// Get token and continue
+if ($_SERVER['HTTP_TOKEN'] != '' && $_SERVER['HTTP_TOKEN'] == '@@admintoken') {
+    // Instantiate DB + connect
+    $database = new Database();
+    $db = $database->connect();
 
-// Instantiate Post object
-$post = new Post($db);
+    // Instantiate Post object
+    $post = new Post($db);
 
-// Get raw posted data
-$data = json_decode(file_get_contents("php://input"));
+    // Get raw posted data
+    $data = json_decode(file_get_contents("php://input"));
 
-// Set id to update
-$post->post_id = $data->id;
+    // Set id to update
+    $post->post_id = $data->id;
 
-// Delete post
-if ($post->delete()) {
-    echo json_encode(
-        array('message' => 'Post deleted')
-    );
-} else {
+    // Delete post
+    if ($post->delete()) {
+        echo json_encode(
+            array('message' => 'Post deleted')
+        );
+    } else {
         echo json_encode(
             array('message' => 'Post not deleted')
         );
+    }
+} else {
+    echo json_encode(
+        array('error' => 'Wrong token!')
+    );
 }
