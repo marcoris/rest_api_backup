@@ -1,7 +1,7 @@
 <?php
 class Database {
     // DB params
-    private $host = '@@host';
+    private $host = '@@dbhost';
     private $dbname = '@@dbname';
     private $username = '@@dbname';
     private $password = '@@dbpass';

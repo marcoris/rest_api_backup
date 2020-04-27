@@ -20,7 +20,7 @@ function deploy() {
         base: '.',
         buffer: false
         })
-        .pipe(replace('@@host', process.env.DB_HOST))
+        .pipe(replace('@@dbhost', process.env.DB_HOST))
         .pipe(replace('@@dbname', process.env.DB_NAME))
         .pipe(replace('@@dbpass', process.env.DB_PASS))
         .pipe(conn.newer('.'))
