@@ -5,10 +5,9 @@ class Category {
     private $table = 'categories';
 
     // Category properties
-    public $id;
+    public $category_id;
     public $name;
     public $created_at;
-    public $num;
 
     // Constructor with DB
     public function __construct($database)
@@ -54,17 +53,10 @@ class Category {
 
         // Execute query
         $stmt->execute(array(
-            ':id' => $this->id
+            ':id' => $this->category_id
         ));
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $num = $stmt->rowCount();
-
-        // Set properties
-        $this->id = $row['id'];
-        $this->name = $row['name'];
-        $this->created_at = $row['created_at'];
-        $this->num = $num;
+        return $stmt;
     }
 
     // Create post
@@ -93,7 +85,7 @@ class Category {
 
         if ($stmt->execute(array(
             ':name' => htmlspecialchars(strip_tags($this->name)),
-            ':id' => htmlspecialchars(strip_tags($this->id))
+            ':id' => htmlspecialchars(strip_tags($this->category_id))
         ))) {
             return true;
         }
@@ -110,7 +102,7 @@ class Category {
         $stmt = $this->conn->prepare("DELETE FROM " . $this->table . " WHERE id = :id");
         
         if ($stmt->execute(array(
-            ":id" => $this->id
+            ":id" => $this->category_id
         ))) {
             return true;
         }
