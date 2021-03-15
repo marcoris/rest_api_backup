@@ -1,81 +1,29 @@
 <?php
-class Post {
-    /**
-     * @var string
-     */
-    private $table = 'posts';
-
-    /**
-     * @var object 
-     */
+class Freizeitradar {
+    // DB stuff
     private $conn;
+    private $table = 'freizeit_aktivitaeten';
 
-    /**
-     * @var integer
-     */
-    public $post_id;
+    // freizeitradar properties
+    public $freizeitradar_id;
 
-    /**
-     * @var string
-     */
-    public $title;
-
-    /**
-     * @var string
-     */
-    public $body;
-
-    /**
-     * @var string
-     */
-    public $author;
-
-    /**
-     * @var integer
-     */
-    public $category_id;
-
-    /**
-     * @var string
-     */
-    public $category_name;
-
-    /**
-     * @var string
-     */
-    public $created_at;
-
-    /**
-     * Post constructor
-     * @param object $database
-     */
+    // Constructor with DB
     public function __construct($database)
     {
         $this->conn = $database;
     }
 
-    /**
-     * Get Posts
-     * 
-     * @return object
-     */
+    // Get freizeitradars
     public function read()
     {       
         // Prepare statement
         $stmt = $this->conn->prepare(
             "SELECT
-                c.name as category_name,
-                p.id,
-                p.category_id,
-                p.title,
-                p.body,
-                p.author,
-                p.created_at
+                *
             FROM " .
-                $this->table . " p
-                LEFT JOIN categories c ON p.category_id = c.id
+                $this->table . "
             ORDER BY
-                p.created_at DESC"
+                id DESC"
         );
 
         // Execute query
@@ -84,35 +32,28 @@ class Post {
         return $stmt;
     }
 
-    // Get single post
+    // Get single freizeitradar
     public function readSingle()
     {
         // Prepare statement
         $stmt = $this->conn->prepare(
             "SELECT
-                c.name as category_name,
-                p.id,
-                p.category_id,
-                p.title,
-                p.body,
-                p.author,
-                p.created_at
+                *
             FROM " .
-                $this->table . " p
-                LEFT JOIN categories c ON p.category_id = c.id
+                $this->table . " 
             WHERE
-                p.id = :id"
+                id = :id"
         );
 
         // Execute query
         $stmt->execute(array(
-            ':id' => $this->post_id
+            ':id' => $this->freizeitradar_id
         ));
 
         return $stmt;
     }
 
-    // Create post
+    // Create freizeitradar
     public function create()
     {
         $stmt = $this->conn->prepare(
@@ -139,7 +80,7 @@ class Post {
         return false;
     }
 
-    // Update post
+    // Update freizeitradar
     public function update()
     {
         $stmt = $this->conn->prepare(
@@ -158,7 +99,7 @@ class Post {
             ':body' => htmlspecialchars(strip_tags($this->body)),
             ':author' => htmlspecialchars(strip_tags($this->author)),
             ':category_id' => htmlspecialchars(strip_tags($this->category_id)),
-            ':id' => htmlspecialchars(strip_tags($this->post_id))
+            ':id' => htmlspecialchars(strip_tags($this->freizeitradar_id))
         ))) {
             return true;
         }
@@ -169,13 +110,13 @@ class Post {
         return false;
     }
 
-    // Delete post
+    // Delete freizeitradar
     public function delete()
     {
         $stmt = $this->conn->prepare("DELETE FROM " . $this->table . " WHERE id = :id");
         
         if ($stmt->execute(array(
-            ":id" => $this->post_id
+            ":id" => $this->freizeitradar_id
         ))) {
             return true;
         }

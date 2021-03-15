@@ -1,16 +1,38 @@
 <?php
 class Database {
-    // DB params
-    private $host = '@@dbhost';
-    private $dbname = '@@dbname';
-    private $username = '@@dbname';
-    private $password = '@@dbpass';
-    private $conn;
+    /**
+     * @var string
+     */
+    private $host = 'localhost';
 
-    // DB connect
-    public function connect()
+    /**
+     * @var string
+     */
+    private $dbname = '';
+
+    /**
+     * @var string
+     */
+    private $username = 'myblog';
+
+    /**
+     * @var string
+     */
+    private $password = '';
+
+    /**
+     * @var null
+     */
+    private $conn = null;
+
+    /**
+     * DB connection
+     * @param string $dbname
+     * @return object
+     */
+    public function connect($dbname)
     {
-        $this->conn = null;
+        $this->dbname = $dbname;
 
         try {
             $this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->dbname, $this->username, $this->password);

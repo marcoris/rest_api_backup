@@ -12,7 +12,7 @@ include_once '../models/Post.php';
 if ($_SERVER['HTTP_TOKEN'] != '' && ($_SERVER['HTTP_TOKEN'] == '@@admintoken' || $_SERVER['HTTP_TOKEN'] == '@@usertoken')) {
     // Instantiate DB + connect
     $database = new Database();
-    $db = $database->connect();
+    $db = $database->connect('myblog');
 
     // Instantiate Post object
     $post = new Post($db);

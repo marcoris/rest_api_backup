@@ -12,7 +12,7 @@ include_once '../models/Category.php';
 if ($_SERVER['HTTP_TOKEN'] != '' && $_SERVER['HTTP_TOKEN'] == '@@admintoken') {
     // Instantiate DB + connect
     $database = new Database();
-    $db = $database->connect();
+    $db = $database->connect('myblog');
 
     // Instantiate Category object
     $category = new Category($db);

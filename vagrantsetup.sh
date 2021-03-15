@@ -43,3 +43,4 @@ sudo systemctl restart apache2.service
 
 # Import bootstrap SQL
 sudo mysql myblog < /var/www/html/myblog.sql
+sudo mysql myblog < /var/www/html/freizeitradar.sql

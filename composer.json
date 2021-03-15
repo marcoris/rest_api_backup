@@ -1,0 +1,13 @@
+{
+    "autoload": {
+      "psr-4": {
+        "Workshop\\": "src/"
+      }
+    },
+    "require": {
+      "php": ">=7.2"
+    },
+    "require-dev": {
+      "phpunit/phpunit": "9"
+    }
+}
