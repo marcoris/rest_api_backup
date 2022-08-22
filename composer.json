@@ -1,11 +1,13 @@
 {
     "autoload": {
       "psr-4": {
-        "Workshop\\": "src/"
+        "API\\": "api/"
       }
     },
     "require": {
-      "php": ">=7.2"
+      "php": "^7.4|^8.0",
+      "ext-json": "*",
+      "ext-pdo": "*"
     },
     "require-dev": {
       "phpunit/phpunit": "9"
