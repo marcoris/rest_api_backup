@@ -1,5 +1,7 @@
 <?php
-class Database {
+
+class Database
+{
     /**
      * @var string
      */
@@ -8,12 +10,12 @@ class Database {
     /**
      * @var string
      */
-    private $dbname = '';
+    private $username = 'myblog';
 
     /**
      * @var string
      */
-    private $username = 'myblog';
+    private $dbname = 'myblog';
 
     /**
      * @var string
@@ -30,10 +32,8 @@ class Database {
      * @param string $dbname
      * @return object
      */
-    public function connect($dbname)
+    public function connect()
     {
-        $this->dbname = $dbname;
-
         try {
             $this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->dbname, $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

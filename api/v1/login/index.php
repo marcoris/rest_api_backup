@@ -1,16 +1,17 @@
 <?php
 // TODO This is just a cheap way for demonstration purposes and has to be replaced with a database query
 if (
-    isset($_SERVER['PHP_AUTH_USER']) &&
-    $_SERVER['PHP_AUTH_PW'] &&
     $_SERVER['PHP_AUTH_USER'] == 'marco' &&
     $_SERVER['PHP_AUTH_PW'] == '1234'
 ) {
-    echo "Token: " . md5("SECRETKEY");
+    header("HTTP/1.1 200 OK");
+    echo json_encode(
+        array('token' => md5("SECRETKEY"))
+        , JSON_PRETTY_PRINT);
     exit;
 }
 
-echo "Wrong credentials!";
 header("WWW-Authenticate: Basic realm=\"Secret Area\"");
-head("HTTP/1.0 401 Unauthorized");
+header("HTTP/1.0 401 Unauthorized");
+echo "Wrong credentials!";
 exit;
