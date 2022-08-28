@@ -5,14 +5,17 @@ class Posts
     /**
      * @var string
      */
-    private $table = 'posts';
+    private string $table = 'posts';
 
     /**
-     * @var null
+     * @var int|null
      */
-    private $lastCreatedId = null;
+    private ?int $lastCreatedId = null;
 
-    public function getId()
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
     {
         return $this->lastCreatedId;
     }
@@ -45,11 +48,11 @@ class Posts
             // Execute query
             $stmt->execute();
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $emparray[] = $row;
+                $arr[] = $row;
             }
 
             return json_encode(
-                array('ok' => $emparray)
+                array('ok' => $arr)
                 , JSON_PRETTY_PRINT);
         } catch (PDOException $e) {
             return json_encode(
@@ -104,10 +107,10 @@ class Posts
     }
 
     /**
-     * @param $data
+     * @param string $data
      * @return bool
      */
-    public function create($data): bool
+    public function create(string $data): bool
     {
         $json = json_decode($data);
 
@@ -147,9 +150,11 @@ class Posts
     }
 
     /**
+     * @param string $data
+     * @param int $id
      * @return bool
      */
-    public function update($data, $id): bool
+    public function update(string $data, int $id): bool
     {
         $json = json_decode($data);
 
@@ -187,10 +192,10 @@ class Posts
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return bool
      */
-    public function delete($id): bool
+    public function delete(int $id): bool
     {
         try {
             $db = new Database;
