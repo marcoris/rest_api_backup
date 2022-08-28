@@ -38,8 +38,6 @@ sudo mysql -e "FLUSH PRIVILEGES;"
 # Disable only full GROUP BY
 sudo mysql -e "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
 
-sudo cp /var/www/html/.htaccess /etc/apache2/.htaccess
-
 # Restart Apache
 sudo systemctl restart apache2.service
 
