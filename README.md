@@ -1,4 +1,10 @@
 # REST api v1
+## TODOs
+- [ ] Dockerize
+  - [ ] Apache
+  - [ ] Nginx
+- [ ] Doctrine for Entities
+
 ## Usage
 | Category | URL                                                      | Method | Access  |
 |----------|----------------------------------------------------------|--------|---------|
