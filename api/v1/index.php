@@ -1,4 +1,5 @@
 <?php
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT');
 header("Content-type:application/json");
@@ -10,6 +11,7 @@ $classname = $request[0];
 $id = $request[1];
 $data = file_get_contents('php://input');
 $query = explode("token=", $_SERVER['QUERY_STRING']);
+
 
 try {
     spl_autoload_register(function ($class) {
@@ -28,7 +30,7 @@ try {
             case "POST":
                 if (isset($query[1]) && CheckToken::isCorrectToken($query[1])) {
                     if (method_exists($request, "create") && $request->create($data)) {
-                        echo $request->readSingle($request->getId());
+                        echo $request->read($request->getId());
                     } else {
                         echo json_encode(
                             array('error' => "Could not be created!")
@@ -44,7 +46,7 @@ try {
                 if (isset($query[1]) && CheckToken::isCorrectToken($query[1])) {
                     if ($id) {
                         if (method_exists($request, "update") && $request->update($data, $id)) {
-                            echo $request->readSingle($id);
+                            echo $request->read($id);
                         } else {
                             echo json_encode(
                                 array('error' => "Could not be updated!")
@@ -83,12 +85,10 @@ try {
                 }
                 break;
             case "GET":
-                if ($id) {
-                    if (method_exists($request, "readSingle")) {
-                        echo $request->readSingle($id);
-                    }
-                } else {
-                    if (method_exists($request, "read")) {
+                if (method_exists($request, "read")) {
+                    if ($id) {
+                        echo $request->read($id);
+                    } else {
                         echo $request->read();
                     }
                 }

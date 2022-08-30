@@ -1,6 +1,6 @@
 <?php
 
-class Posts
+class Posts implements Iapi
 {
     /**
      * @var string
@@ -21,13 +21,21 @@ class Posts
     }
 
     /**
-     * @return false|string
+     * @param int|null $id
+     * @return string
      */
-    public function read(): string
+    public function read(int $id = null): string
     {
         try {
             $db = new Database;
             $conn = $db->connect();
+            $where = "";
+            $array = [];
+
+            if ($id) {
+                $where = "WHERE p.id = :id";
+                $array[':id'] = $id;
+            }
 
             // Prepare statement
             $stmt = $conn->prepare(
@@ -41,12 +49,18 @@ class Posts
                     p.created_at
                 FROM $this->table p
                     LEFT JOIN categories c ON p.category_id = c.id
+                $where
                 ORDER BY
                     p.created_at DESC"
             );
 
             // Execute query
-            $stmt->execute();
+            if ($id) {
+                $stmt->execute($array);
+            } else {
+                $stmt->execute();
+            }
+
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $arr[] = $row;
             }
@@ -58,51 +72,6 @@ class Posts
             return json_encode(
                 array('internal_error' => $e->getMessage())
                 , JSON_PRETTY_PRINT);
-        }
-    }
-
-    /**
-     * @param int $id
-     * @return string
-     */
-    public function readSingle(int $id): string
-    {
-        try {
-            $db = new Database;
-            $conn = $db->connect();
-
-            // Prepare statement
-            $stmt = $conn->prepare(
-                "SELECT
-                    c.name as category_name,
-                    p.id,
-                    p.category_id,
-                    p.title,
-                    p.body,
-                    p.author,
-                    p.created_at
-                FROM $this->table p
-                    LEFT JOIN categories c ON p.category_id = c.id
-                WHERE
-                    p.id = :id"
-            );
-
-            // Execute query
-            $stmt->execute(array(
-                ':id' => $id
-            ));
-
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $emparray[] = $row;
-            }
-
-            return json_encode(
-                array('ok' => $emparray)
-                , JSON_PRETTY_PRINT);
-        } catch (PDOException $e) {
-            return json_encode(
-                array('internal_error' => $e->getMessage())
-            );
         }
     }
 
