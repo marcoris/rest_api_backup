@@ -4,14 +4,13 @@ if (
     $_SERVER['PHP_AUTH_USER'] == 'marco' &&
     $_SERVER['PHP_AUTH_PW'] == '1234'
 ) {
-    header("HTTP/1.1 200 OK");
+    http_response_code(202);
     echo json_encode(
         array('token' => md5("SECRETKEY"))
         , JSON_PRETTY_PRINT);
     exit;
 }
 
-header("WWW-Authenticate: Basic realm=\"Secret Area\"");
-header("HTTP/1.0 401 Unauthorized");
+http_response_code(401);
 echo "Wrong credentials!";
 exit;
