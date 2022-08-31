@@ -1,6 +1,6 @@
 <?php
 
-interface Iapi
+interface IRestApi
 {
     public function getId();
     public function create(string $data) : bool;

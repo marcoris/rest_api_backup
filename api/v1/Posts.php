@@ -1,6 +1,6 @@
 <?php
 
-class Posts implements Iapi
+class Posts implements IRestApi
 {
     /**
      * @var string
@@ -65,8 +65,15 @@ class Posts implements Iapi
                 $arr[] = $row;
             }
 
+            if (!$arr) {
+                http_response_code(404);
+                $arr = "Not found";
+            } else {
+                http_response_code(200);
+            }
+
             return json_encode(
-                array('ok' => $arr)
+                array('content' => $arr)
                 , JSON_PRETTY_PRINT);
         } catch (PDOException $e) {
             return json_encode(
