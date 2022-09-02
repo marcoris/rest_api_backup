@@ -43,3 +43,11 @@ sudo systemctl restart apache2.service
 
 # Import bootstrap SQL
 sudo mysql myblog < /var/www/html/myblog.sql
+
+# Install composer
+sudo apt-get install -y php8.0-xml php8.0-mbstring
+sudo curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --with-all-dependencies
+
+cd /var/www/html
+
+composer update
