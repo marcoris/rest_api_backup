@@ -3,11 +3,6 @@
 class Posts implements IRestApi
 {
     /**
-     * @var string
-     */
-    private string $table = 'posts';
-
-    /**
      * @var int|null
      */
     private ?int $lastCreatedId = null;
@@ -18,6 +13,15 @@ class Posts implements IRestApi
     public function getId(): ?int
     {
         return $this->lastCreatedId;
+    }
+
+    /**
+     * @param int $lastCreatedId
+     * @return void
+     */
+    private function setLastCreatedId(int $lastCreatedId): void
+    {
+        $this->lastCreatedId = $lastCreatedId;
     }
 
     /**
@@ -37,7 +41,6 @@ class Posts implements IRestApi
                 $array[':id'] = $id;
             }
 
-            // Prepare statement
             $stmt = $conn->prepare(
                 "SELECT
                     c.name as category_name,
@@ -47,14 +50,13 @@ class Posts implements IRestApi
                     p.body,
                     p.author,
                     p.created_at
-                FROM $this->table p
+                FROM posts p
                     LEFT JOIN categories c ON p.category_id = c.id
                 $where
                 ORDER BY
                     p.created_at DESC"
             );
 
-            // Execute query
             if ($id) {
                 $stmt->execute($array);
             } else {
@@ -95,7 +97,7 @@ class Posts implements IRestApi
             $conn = $db->connect();
 
             $stmt = $conn->prepare(
-                "INSERT INTO " . $this->table . "
+                "INSERT INTO posts
                 SET
                     title = :title,
                     body = :body,
@@ -112,17 +114,15 @@ class Posts implements IRestApi
                 ':category_id' => htmlspecialchars(strip_tags($json->category_id)),
                 ':created_at' => date("Y-m-d H:i:s")
             ))) {
-                $this->lastCreatedId = $conn->lastInsertId();
-                return true;
+                $this->setLastCreatedId($conn->lastInsertId());
             }
-                return true;
         } catch (PDOException $e) {
             echo json_encode(
                 array('internal_error' => $e->getMessage())
             );
         }
 
-        return false;
+        return $this->getId() !== null;
     }
 
     /**
@@ -139,7 +139,7 @@ class Posts implements IRestApi
             $conn = $db->connect();
 
             $stmt = $conn->prepare(
-                "UPDATE " . $this->table . "
+                "UPDATE posts
                 SET
                     title = :title,
                     body = :body,
@@ -177,7 +177,7 @@ class Posts implements IRestApi
             $db = new Database;
             $conn = $db->connect();
 
-            $stmt = $conn->prepare("DELETE FROM " . $this->table . " WHERE id = :id");
+            $stmt = $conn->prepare("DELETE FROM posts WHERE id = :id");
 
             if ($stmt->execute(array(
                 ":id" => $id
