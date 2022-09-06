@@ -13,7 +13,7 @@ services:
     env_file:
       - ./db.env
     networks:
-      - symfony
+      - restapi
   php:
     build:
       context: ./php
@@ -21,9 +21,9 @@ services:
         TIMEZONE: ${TIMEZONE}
     container_name: php
     volumes:
-      - symfony_dockerized_app_sync:/var/www/symfony
+      - ../api:/var/www/html
     networks:
-      - symfony
+      - restapi
   nginx:
     build:
       context: ./nginx
@@ -31,14 +31,12 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - symfony_dockerized_app_sync:/var/www/symfony
+      - ../api:/var/www/html
     networks:
-      - symfony
+      - restapi
     env_file:
       - .env.nginx.local
 volumes:
-  symfony_dockerized_app_sync:
-    external: true
   mysql_data:
 networks:
-  symfony:
+  restapi:
