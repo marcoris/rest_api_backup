@@ -3,6 +3,7 @@
 - [x] Dockerize
   - [x] Nginx
 - [ ] Symfony/Doctrine for Entities
+- [ ] Unit tests
 
 ## Usage
 | Category | URL                                           | Method | Access  |
