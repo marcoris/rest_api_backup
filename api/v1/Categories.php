@@ -1,6 +1,6 @@
 <?php
 
-class Posts implements IRestApi
+class Categories implements IRestApi
 {
     /**
      * @var int|null
@@ -16,12 +16,45 @@ class Posts implements IRestApi
     }
 
     /**
-     * @param int $lastCreatedId
-     * @return void
+     * @param int|null $lastCreatedId
      */
-    private function setLastCreatedId(int $lastCreatedId): void
+    public function setLastCreatedId(?int $lastCreatedId): void
     {
         $this->lastCreatedId = $lastCreatedId;
+    }
+
+    /**
+     * @param string $data
+     * @return bool
+     */
+    public function create(string $data): bool
+    {
+        $json = json_decode($data);
+
+        try {
+            $db = new Database;
+            $conn = $db->connect();
+
+            $stmt = $conn->prepare(
+                "INSERT INTO categories
+                SET
+                    name = :name,
+                    created_at = :created_at"
+            );
+
+            if ($stmt->execute(array(
+                ':name' => htmlspecialchars(strip_tags($json->name)),
+                ':created_at' => date("Y-m-d H:i:s")
+            ))) {
+                $this->setLastCreatedId($conn->lastInsertId());
+            }
+        } catch (PDOException $e) {
+            echo json_encode(
+                array('internal_error' => $e->getMessage())
+            );
+        }
+
+        return $this->getId() !== null;
     }
 
     /**
@@ -37,24 +70,19 @@ class Posts implements IRestApi
             $array = [];
 
             if ($id) {
-                $where = "WHERE p.id = :id";
+                $where = "WHERE id = :id";
                 $array[':id'] = $id;
             }
 
             $stmt = $conn->prepare(
                 "SELECT
-                    c.name as category_name,
-                    p.id,
-                    p.category_id,
-                    p.title,
-                    p.body,
-                    p.author,
-                    p.created_at
-                FROM posts p
-                    LEFT JOIN categories c ON p.category_id = c.id
+                    id,
+                    name,
+                    created_at
+                FROM categories
                 $where
                 ORDER BY
-                    p.created_at DESC"
+                    created_at DESC"
             );
 
             if ($id) {
@@ -86,47 +114,6 @@ class Posts implements IRestApi
 
     /**
      * @param string $data
-     * @return bool
-     */
-    public function create(string $data): bool
-    {
-        $json = json_decode($data);
-
-        try {
-            $db = new Database;
-            $conn = $db->connect();
-
-            $stmt = $conn->prepare(
-                "INSERT INTO posts
-                SET
-                    title = :title,
-                    body = :body,
-                    author = :author,
-                    category_id = :category_id,
-                    created_at = :created_at"
-            );
-
-
-            if ($stmt->execute(array(
-                ':title' => htmlspecialchars(strip_tags($json->title)),
-                ':body' => htmlspecialchars(strip_tags($json->body)),
-                ':author' => htmlspecialchars(strip_tags($json->author)),
-                ':category_id' => htmlspecialchars(strip_tags($json->category_id)),
-                ':created_at' => date("Y-m-d H:i:s")
-            ))) {
-                $this->setLastCreatedId($conn->lastInsertId());
-            }
-        } catch (PDOException $e) {
-            echo json_encode(
-                array('internal_error' => $e->getMessage())
-            );
-        }
-
-        return $this->getId() !== null;
-    }
-
-    /**
-     * @param string $data
      * @param int $id
      * @return bool
      */
@@ -139,22 +126,16 @@ class Posts implements IRestApi
             $conn = $db->connect();
 
             $stmt = $conn->prepare(
-                "UPDATE posts
+                "UPDATE categories
                 SET
-                    title = :title,
-                    body = :body,
-                    author = :author,
-                    category_id = :category_id
+                    name = :name
                 WHERE
                     id = :id"
             );
 
             if ($stmt->execute(array(
-                ':title' => htmlspecialchars(strip_tags($json->title)),
-                ':body' => htmlspecialchars(strip_tags($json->body)),
-                ':author' => htmlspecialchars(strip_tags($json->author)),
-                ':category_id' => htmlspecialchars(strip_tags($json->category_id)),
-                ':id' => $id)
+                    ':name' => htmlspecialchars(strip_tags($json->name)),
+                    ':id' => $id)
             )) {
                 return true;
             }
@@ -177,7 +158,7 @@ class Posts implements IRestApi
             $db = new Database;
             $conn = $db->connect();
 
-            $stmt = $conn->prepare("DELETE FROM posts WHERE id = :id");
+            $stmt = $conn->prepare("DELETE FROM categories WHERE id = :id");
 
             if ($stmt->execute(array(
                 ":id" => $id
